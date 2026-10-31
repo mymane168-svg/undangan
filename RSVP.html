@@ -1,0 +1,487 @@
+
+<!-- RSVP DAN BUKU UCAPAN -->
+<section id="buku-ucapan">
+  <div class="rsvp-card">
+    <div style="margin-bottom: 15px; text-align: left;">
+      <button type="button" onclick="window.location.href='index.html';" style="padding: 8px 14px; border: 0; border-radius: 999px; background: #f1e7df; color: #593e34; font-weight: 600; cursor: pointer;">
+        ← Kembali
+      </button>
+    </div>
+    <h2>Kirim Ucapan &amp; RSVP</h2>
+    <p class="rsvp-subtitle">
+      Berikan doa dan konfirmasi kehadiran Anda
+    </p>
+
+    <form id="rsvpForm">
+      <label for="nama">Nama Lengkap</label>
+      <input
+        id="nama"
+        type="text"
+        maxlength="80"
+        placeholder="Masukkan nama Anda"
+        required
+      >
+
+      <label for="kehadiran">Konfirmasi Kehadiran</label>
+      <select id="kehadiran" required>
+        <option value="">Pilih Kehadiran</option>
+        <option value="Hadir">Hadir</option>
+        <option value="Tidak Hadir">Tidak Hadir</option>
+      </select>
+
+      <label for="pesan">Ucapan dan Doa</label>
+      <textarea
+        id="pesan"
+        maxlength="1000"
+        placeholder="Tuliskan ucapan dan doa..."
+        required
+      ></textarea>
+
+      <button id="kirimBtn" type="submit">
+        Kirim Ucapan
+      </button>
+      <p id="statusForm" aria-live="polite"></p>
+    </form>
+
+    <div class="rsvp-count">
+      <span id="jumlahUcapan">0</span> Ucapan Terkirim
+    </div>
+
+    <div id="daftarUcapan">
+      Memuat ucapan...
+    </div>
+  </div>
+</section>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #efe7e0;
+    color: #483b35;
+  }
+
+  #buku-ucapan {
+    min-height: 100vh;
+    padding: 0;
+    background:
+      radial-gradient(circle at top, rgba(255,255,255,0.52), transparent 28%),
+      linear-gradient(180deg, #f4ece7 0%, #eee2d6 100%);
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .rsvp-card {
+    width: 100%;
+    max-width: none;
+    min-height: 100vh;
+    margin: 0;
+    padding: 22px 18px 24px;
+    background: rgba(255,255,255,0.96);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rsvp-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #d7b89b, #b98f73, #d7b89b);
+  }
+
+  .rsvp-badge {
+    display: inline-block;
+    margin: 4px auto 12px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: #f4e7df;
+    border: 1px solid #ead9ce;
+    color: #73574a;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .rsvp-card h2,
+  .rsvp-card h3 {
+    margin: 0 0 10px;
+    text-align: center;
+    line-height: 1.3;
+    color: #503d35;
+  }
+
+  .rsvp-card h2 {
+    font-size: clamp(1.9rem, 5vw, 2.5rem);
+    font-family: Georgia, "Times New Roman", serif;
+    letter-spacing: 0.02em;
+  }
+
+  .rsvp-card h3 {
+    font-size: 1.12rem;
+    font-weight: 700;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f4e7df;
+    border: 1px solid #ead9ce;
+  }
+
+  .rsvp-subtitle {
+    margin: 0 0 20px;
+    text-align: center;
+    color: #7b625b;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .rsvp-card label {
+    display: block;
+    margin: 16px 0 8px;
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: #4d3a34;
+  }
+
+  .rsvp-card input,
+  .rsvp-card select,
+  .rsvp-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 14px;
+    border: 1px solid #e3d3c3;
+    border-radius: 12px;
+    background: #fffdfb;
+    color: #3c2c28;
+    font: inherit;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+  }
+
+  .rsvp-card input:focus,
+  .rsvp-card select:focus,
+  .rsvp-card textarea:focus {
+    border-color: #b88d6f;
+    box-shadow: 0 0 0 4px rgba(184, 141, 111, 0.15);
+    outline: none;
+  }
+
+  .rsvp-card textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  #kirimBtn {
+    width: 100%;
+    margin-top: 18px;
+    padding: 15px 18px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #815e4d 0%, #5a4037 100%);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 8px 20px rgba(88, 60, 49, 0.18);
+  }
+
+  #kirimBtn:hover {
+    transform: translateY(-1px);
+  }
+
+  #kirimBtn:active {
+    transform: translateY(0);
+  }
+
+  #kirimBtn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+  }
+
+  .rsvp-count {
+    margin: 24px 0 18px;
+    text-align: center;
+    color: #6d4a3d;
+    font-size: 0.92rem;
+    font-weight: 700;
+  }
+
+  #daftarUcapan {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .ucapan-item {
+    padding: 14px 12px;
+    border: 1px solid #efdfd0;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #fffdfb 0%, #f7f0ea 100%);
+    overflow-wrap: anywhere;
+    box-shadow: 0 4px 12px rgba(88, 61, 48, 0.03);
+    border-left: 4px solid #b98f73;
+  }
+
+  .ucapan-item strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1rem;
+    color: #4d3b35;
+  }
+
+  .ucapan-status {
+    margin-bottom: 8px;
+    color: #8d705d;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .ucapan-pesan {
+    margin: 0;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-size: 0.96rem;
+    color: #553f37;
+  }
+
+  #statusForm {
+    min-height: 18px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #5f4a41;
+  }
+
+  @media (max-width: 480px) {
+    #buku-ucapan {
+      padding: 18px 10px 28px;
+    }
+
+    .rsvp-card {
+      width: 100%;
+      padding: 16px 12px 18px;
+      border-radius: 0;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .rsvp-card h2 {
+      margin-bottom: 8px;
+      font-size: 2rem;
+    }
+
+    .rsvp-subtitle {
+      font-size: 0.95rem;
+      margin-bottom: 14px;
+    }
+
+    .rsvp-card input,
+    .rsvp-card select,
+    .rsvp-card textarea {
+      font-size: 16px;
+      padding: 14px 13px;
+    }
+
+    #kirimBtn {
+      min-height: 48px;
+      font-size: 1rem;
+    }
+
+    #daftarUcapan {
+      margin-top: 14px;
+    }
+
+    .ucapan-item {
+      padding: 12px 10px;
+    }
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const STORAGE_KEY = "ucapan-rsvp-local";
+const DATA_UCAPAN = [
+  // Contoh data awal. Anda bisa menghapus item di sini kalau mau.
+  // { id: 1, nama: "Contoh Nama", kehadiran: "Hadir", pesan: "Selamat ya!", created_at: new Date().toISOString() }
+];
+
+(() => {
+  const SUPABASE_URL = "https://your-project.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_V4CqEDCUKiK-wZfl-bHmjA_lDevrFCA";
+
+  const form = document.getElementById("rsvpForm");
+  const tombol = document.getElementById("kirimBtn");
+  const status = document.getElementById("statusForm");
+  const daftar = document.getElementById("daftarUcapan");
+  const jumlah = document.getElementById("jumlahUcapan");
+
+  const isPlaceholderConfig = !SUPABASE_URL.startsWith("http") ||
+    SUPABASE_URL.includes("your-project") ||
+    SUPABASE_ANON_KEY.includes("your-");
+
+  let db = null;
+
+  if (window.supabase && !isPlaceholderConfig) {
+    try {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (error) {
+      console.error(error);
+      db = null;
+    }
+  }
+
+  let ucapanList = [];
+
+  function getLocalUcapan() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [...DATA_UCAPAN];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) && parsed.length ? parsed : [...DATA_UCAPAN];
+    } catch {
+      return [...DATA_UCAPAN];
+    }
+  }
+
+  function simpanLocalUcapan(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function resetUcapan() {
+    ucapanList = [...DATA_UCAPAN];
+    simpanLocalUcapan(ucapanList);
+    renderUcapan(ucapanList);
+  }
+
+  function renderUcapan(list) {
+    jumlah.textContent = list.length;
+    daftar.replaceChildren();
+
+    if (list.length === 0) {
+      daftar.textContent = "Belum ada ucapan. Jadilah yang pertama!";
+      return;
+    }
+
+    list.forEach((item) => {
+      const kartu = document.createElement("div");
+      kartu.className = "ucapan-item";
+
+      const nama = document.createElement("strong");
+      nama.textContent = item.nama;
+
+      const kehadiran = document.createElement("div");
+      kehadiran.className = "ucapan-status";
+      kehadiran.textContent = item.kehadiran;
+
+      const pesan = document.createElement("p");
+      pesan.className = "ucapan-pesan";
+      pesan.textContent = item.pesan;
+
+      kartu.append(nama, kehadiran, pesan);
+      daftar.appendChild(kartu);
+    });
+  }
+
+  async function muatUcapan() {
+    daftar.textContent = "Memuat ucapan...";
+
+    if (!db) {
+      ucapanList = getLocalUcapan();
+      renderUcapan(ucapanList);
+      return;
+    }
+
+    const { data, error } = await db
+      .from("ucapan")
+      .select("id,nama,kehadiran,pesan,created_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      daftar.textContent = "Ucapan belum dapat dimuat.";
+      console.error(error);
+      return;
+    }
+
+    renderUcapan(data || []);
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const nama = document.getElementById("nama").value.trim();
+    const kehadiran = document.getElementById("kehadiran").value;
+    const pesan = document.getElementById("pesan").value.trim();
+
+    if (!nama || !kehadiran || !pesan) {
+      status.textContent = "Mohon lengkapi semua kolom.";
+      return;
+    }
+
+    tombol.disabled = true;
+    tombol.textContent = "Mengirim...";
+    status.textContent = "";
+
+    if (!db) {
+      ucapanList = getLocalUcapan();
+      const item = {
+        id: Date.now(),
+        nama,
+        kehadiran,
+        pesan,
+        created_at: new Date().toISOString()
+      };
+      const next = [item, ...ucapanList];
+      ucapanList = next;
+      simpanLocalUcapan(ucapanList);
+      status.textContent = "Ucapan berhasil dikirim. Terima kasih!";
+      form.reset();
+      renderUcapan(ucapanList);
+      tombol.disabled = false;
+      tombol.textContent = "Kirim Ucapan";
+      return;
+    }
+
+    const { error } = await db
+      .from("ucapan")
+      .insert([{ nama, kehadiran, pesan }]);
+
+    if (error) {
+      status.textContent = "Gagal mengirim. Silakan coba lagi.";
+      console.error(error);
+    } else {
+      status.textContent = "Ucapan berhasil dikirim. Terima kasih!";
+      form.reset();
+      await muatUcapan();
+    }
+
+    tombol.disabled = false;
+    tombol.textContent = "Kirim Ucapan";
+  });
+
+  if (!window.supabase) {
+    status.textContent = "Supabase belum aktif. Mode simulasi lokal sedang berjalan.";
+  } else if (isPlaceholderConfig) {
+    status.textContent = "Konfigurasi Supabase belum diisi. Mode simulasi lokal sedang berjalan.";
+  }
+
+  // Data tetap tersimpan di browser dan bisa dihapus dari sini dengan:
+  // resetUcapan();
+  window.resetUcapan = resetUcapan;
+  muatUcapan();
+})();
+</script>
